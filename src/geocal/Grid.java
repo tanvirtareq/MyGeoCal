@@ -56,14 +56,14 @@ public class Grid extends Application {
     
     
 
-    public void show() {
+    public static void show() {
         String[] args = null;
-
         main(args);
 
     }
 
     public static void main(String[] args) {
+       
         launch(args);
     }
 
@@ -247,8 +247,8 @@ public class Grid extends Application {
      
     void drawFunctions()
     {
-        FunctionDrawing fd=new FunctionDrawing();
-        fd.drawFunction(this);
+//        FunctionDrawing fd=new FunctionDrawing();
+//        fd.drawFunction(this);
         
     }
 }

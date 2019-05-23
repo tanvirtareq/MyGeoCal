@@ -6,6 +6,7 @@
 package geocal;
 
 import java.awt.event.MouseWheelEvent;
+import java.util.ArrayList;
 import javafx.event.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -42,6 +43,8 @@ import javafx.stage.StageStyle;
 public class GridMaintainceInThread implements Runnable {
     Thread t;
     
+    ArrayList<DrawAble> arrayList=new ArrayList<DrawAble>();
+    
     GridMaintainceInThread()
     {
         t=new Thread(this);
@@ -50,6 +53,9 @@ public class GridMaintainceInThread implements Runnable {
     
     void maintainGrid(GraphicsContext gc)
     {
+        Line line1=new Line(0, 0, 100, 100);
+        arrayList.add(line1);
+        
         this.gc=gc;
         t.start();
     }
@@ -78,13 +84,14 @@ public class GridMaintainceInThread implements Runnable {
         positionOfXAxis = (gc.getCanvas().getBoundsInLocal().getMaxY() + gc.getCanvas().getBoundsInLocal().getMinY()) / 2.0;
         positionOfYAxis = (gc.getCanvas().getBoundsInLocal().getMaxX() + gc.getCanvas().getBoundsInLocal().getMinX()) / 2.0;
         unitOfScale = 40;
-        System.out.println(positionOfXAxis + " " + positionOfYAxis + " " + unitOfScale);
+//        System.out.println(positionOfXAxis + " " + positionOfYAxis + " " + unitOfScale);
 
         increment = 30.0;
 
         drawHorizontalLines(gc, 30.0);
         drawVerticalLines(gc, 30.0);
         drawLine(gc);
+        drawDrawAble(gc);
 
         zoomOutButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -163,6 +170,7 @@ public class GridMaintainceInThread implements Runnable {
             public void handle(MouseEvent event) {
                 mousePressedX = event.getX();
                 mousePressedY = event.getY();
+//                System.out.println(mousePressedX+" "+mousePressedY);
             }
         };
 
@@ -193,7 +201,13 @@ public class GridMaintainceInThread implements Runnable {
         
         drawHorizontalLines(gc, increment);
         drawVerticalLines(gc, increment);
+        drawDrawAble(gc);
+        
         drawLine(gc);
+        
+//        gc.strokeLine(0,0, 1000, 1000);
+        
+       
         
 //        drawFunctions();
     }
@@ -242,41 +256,38 @@ public class GridMaintainceInThread implements Runnable {
 
      double func(double  x)
      {
-         return x*x;
+         return Math.sin(x);
      }
      
      void drawLine(GraphicsContext gc)
      {
-         double x0=0;
-         double y0=func(x0);
          
-         double xprev=x0+positionOfYAxis;
-         double yprev=y0+positionOfXAxis;
+         double xprev=gc.getCanvas().getBoundsInLocal().getMinX();
+         double yprev=-func((xprev-positionOfYAxis)/unitOfScale)*unitOfScale+positionOfXAxis;
          
-         for(x0=1;x0+positionOfYAxis<=gc.getCanvas().getBoundsInLocal().getMaxX() ; x0++)
+         for(double x0=xprev+1;x0<=gc.getCanvas().getBoundsInLocal().getMaxX();x0++)
          {
-             y0=-func(x0);
+//             x0=gc.getCanvas().getBoundsInLocal().getMaxX();
+             double y0=-func((x0-positionOfYAxis)/unitOfScale)*unitOfScale+positionOfXAxis;
              
+             gc.strokeLine(x0, y0, xprev, yprev);
 //             System.out.println(xprev+ " "+yprev+" "+x0+" "+y0);
              
-             gc.strokeLine(xprev, yprev, x0+positionOfYAxis, y0+positionOfXAxis);
-             xprev= x0+positionOfYAxis;
-             yprev=y0+positionOfXAxis;
+             xprev=x0;
+             yprev=y0;
+//             break;
          }
-         
-         xprev=0+positionOfYAxis;
-         yprev=func(x0)+positionOfXAxis;
-         
-         for(x0=-1;x0+positionOfYAxis>=gc.getCanvas().getBoundsInLocal().getMinX() ; x0--)
-         {
-             y0=-func(x0);
-             
-//             System.out.println(xprev+ " "+yprev+" "+x0+" "+y0);
-             
-             gc.strokeLine(xprev, yprev, x0+positionOfYAxis, y0+positionOfXAxis);
-             xprev= x0+positionOfYAxis;
-             yprev=y0+positionOfXAxis;
-         }
-         
+
+     }
+     
+     void drawDrawAble(GraphicsContext gc)
+     {
+          for(int i=0;i<arrayList.size();i++)
+        {
+            DrawAble d=arrayList.get(i);
+            d.draw(gc, positionOfYAxis, positionOfXAxis, unitOfScale);
+            System.out.println(i);
+            
+        }
      }
 }
