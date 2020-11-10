@@ -43,11 +43,12 @@ import javafx.stage.StageStyle;
 public class GridMaintainceInThread implements Runnable {
     Thread t;
     
+   
     ArrayList<DrawAble> arrayList=new ArrayList<DrawAble>();
     
     GridMaintainceInThread()
     {
-        t=new Thread(this);
+//        t=new Thread(t);
         
     }
     
@@ -79,6 +80,10 @@ public class GridMaintainceInThread implements Runnable {
 
     @Override
     public void run() {
+        
+        gc.getCanvas().setStyle(
+                "background-fx-color:RED"
+        );
 
 
         positionOfXAxis = (gc.getCanvas().getBoundsInLocal().getMaxY() + gc.getCanvas().getBoundsInLocal().getMinY()) / 2.0;
@@ -290,4 +295,13 @@ public class GridMaintainceInThread implements Runnable {
             
         }
      }
+     
+     
+      public static void main(String[] args) {
+        Canvas cn=new Canvas();
+//        GraphicsContext gc=cn.getGraphicsContext2D();
+        GridMaintainceInThread gr=new GridMaintainceInThread();
+//        gr.maintainGrid(gc);
+    }
+    
 }

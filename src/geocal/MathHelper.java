@@ -11,6 +11,8 @@ import java.util.*;
  *
  * @author Tanvir Tareq
  */
+
+
 public class MathHelper {
     
     public static void main(String[] args) {
@@ -30,7 +32,7 @@ public class MathHelper {
        
         for(int i=0;i<infix.length();i++)
         {
-            if(infix.charAt(i)<='0' && infix.charAt(i)>='9')
+            if((infix.charAt(i)<='0' && infix.charAt(i)>='9') || infix.charAt(i)=='x')
             {
                 if(isNumberStart==false)
                 {
@@ -68,6 +70,11 @@ public class MathHelper {
                     {
                         postfix=postfix+stk.peek();
                         stk.pop();
+                    }
+                    
+                    if(stk.peek()!='(')
+                    {
+                        postfix=postfix+stk.peek();
                     }
                     stk.pop();
                 }
@@ -109,9 +116,110 @@ public class MathHelper {
     
   
 
-    static double postfixToEvaluate(String func, double x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    static double postfixToEvaluate(String postfix, Double x) {
+        double ans=0;
+        
+        Stack<Character> stk=new Stack<>();
+        Stack<Double> numberStk=new Stack<>();
+        
+//        stk.add('(');
+        
+//        postfix=postfix+")";
+         String str="";
+          boolean intStart=false;
+        
+        for(int i=0;i<postfix.length();i++)
+        {
+           if(postfix.charAt(i)=='@')
+           {
+               intStart=true;
+               str="";
+               i++;
+               while(postfix.charAt(i)!='#')
+               {
+                   if(postfix.charAt(i)=='x')
+                   {
+                       str=str+x.toString();
+                   }
+                   else
+                   {
+                       str=str+postfix.charAt(i);
+                   }
+                   i++;
+               }
+               Double nmbr=Double.parseDouble(str);
+               numberStk.push(nmbr);
+           }
+           
+           else if(postfix.charAt(i)=='+')
+           {
+               Double b=numberStk.peek();
+               numberStk.pop();
+               
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=a+b;
+               numberStk.push(answer);
+           }
+           
+           else if(postfix.charAt(i)=='-')
+           {
+               Double b=numberStk.peek();
+               numberStk.pop();
+               
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=a-b;
+               numberStk.push(answer);
+           }
+           
+           else if(postfix.charAt(i)=='*')
+           {
+               Double b=numberStk.peek();
+               numberStk.pop();
+               
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=a*b;
+               numberStk.push(answer);
+           }
+           
+           else if(postfix.charAt(i)=='/')
+           {
+               Double b=numberStk.peek();
+               numberStk.pop();
+               
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=a/b;
+               numberStk.push(answer);
+           }
+           
+           else if(postfix.charAt(i)=='L')
+           {
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=Math.log10(a);
+               numberStk.push(answer);
+           }
+           
+           else if(postfix.charAt(i)=='S')
+           {
+               Double a=numberStk.peek();
+               numberStk.pop();
+               
+               Double answer=Math.sin(a);
+               numberStk.push(answer);
+           }
+            
+        }
+        
+        return numberStk.peek();
     }
-     
     
 }

@@ -13,7 +13,7 @@ import javafx.scene.canvas.GraphicsContext;
  */
 public class Function extends DrawAble {
     
-    String func;
+    String postFixExpression;
 
     @Override
     void draw(GraphicsContext gc, double X, double Y, double unitOfScale) {
@@ -36,7 +36,7 @@ public class Function extends DrawAble {
     
     double function(double  x)
     {
-        return MathHelper.postfixToEvaluate(func, x);
+        return MathHelper.postfixToEvaluate(postFixExpression, x);
         
     }
 
